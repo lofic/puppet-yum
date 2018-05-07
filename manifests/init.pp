@@ -19,6 +19,7 @@ class yum(Hash $repos={}, Hash $keys={}) {
 
         $repos.each |$r, $rp| { yumrepo { $r: * => $rdefaults + $rp} }
 
+
         $fdefaults = {
             owner     => 'root',
             group     => 'root',
@@ -28,6 +29,11 @@ class yum(Hash $repos={}, Hash $keys={}) {
 
         # create_resources('file', $keys, $fdefaults)
         $keys.each |$k, $kp| { file { $k: * => $fdefaults + $kp } }
+
+        # We have a custom management of EPEL
+        file { '/etc/yum.repos.d/epel.repo':
+            * => $fdefaults + { content => '' }
+        }
 
     }
 
